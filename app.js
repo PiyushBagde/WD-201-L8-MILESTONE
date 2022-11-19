@@ -1,5 +1,4 @@
 /* eslint-disable comma-dangle */
-/* eslint-disable no-unneeded-ternary */
 /* eslint-disable semi */
 /* eslint-disable quotes */
 const express = require("express");
@@ -17,7 +16,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/", async (request, response) => {
   const allTodos = await Todo.getTodos();
   if (request.accepts("html")) {
-    response.render('index', {
+    response.render("index", {
       allTodos,
     });
   } else {
@@ -25,6 +24,18 @@ app.get("/", async (request, response) => {
       allTodos,
     });
   }
+});
+
+app.get("/", async (request, response) => {
+  const overdue = await Todo.overdue();
+  const dueToday = await Todo.dueToday();
+  const dueLater = await Todo.dueLater();
+  response.render("index", {
+    title: "Todo application",
+    overdue,
+    dueToday,
+    dueLater,
+  });
 });
 
 app.get("/", function (request, response) {
@@ -87,10 +98,10 @@ app.delete("/todos/:id", async function (request, response) {
       id: request.params.id,
     },
   });
+  // eslint-disable-next-line no-unneeded-ternary
   response.send(deleteTodo ? true : false);
 
   // First, we have to query our database to delete a Todo by ID.
   // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
 });
-
 module.exports = app;
